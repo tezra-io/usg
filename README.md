@@ -1,11 +1,11 @@
-# usage-cli
+# usg
 
 Lightweight CLI to report Claude Code and Codex usage/limits.
 
 ## Install
 
 ```bash
-go install github.com/sujshe/usage-cli@latest
+go install github.com/sujshe/usg@latest
 ```
 
 Or build from source:
@@ -17,11 +17,11 @@ make build
 ## Usage
 
 ```bash
-usage-cli claude          # Claude Code usage
-usage-cli codex           # Codex usage
-usage-cli all             # Both (default)
-usage-cli claude --json   # JSON output
-usage-cli all --watch 15  # Poll every 15s
+usg claude          # Claude Code usage
+usg codex           # Codex usage
+usg all             # Both (default)
+usg claude --json   # JSON output
+usg all --watch 15  # Poll every 15s
 ```
 
 ## Auth

@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/sujshe/usage-cli/internal/claude"
-	"github.com/sujshe/usage-cli/internal/codex"
-	"github.com/sujshe/usage-cli/internal/output"
+	"github.com/tezra-io/usg/internal/claude"
+	"github.com/tezra-io/usg/internal/codex"
+	"github.com/tezra-io/usg/internal/output"
 )
 
 const version = "0.1.0"
@@ -41,7 +41,7 @@ func main() {
 				}
 			}
 		case "--version", "-v":
-			fmt.Println("usage-cli " + version)
+			fmt.Println("usg " + version)
 			return
 		case "--help", "-h":
 			printUsageHelp()
@@ -143,10 +143,10 @@ func runAll(jsonMode bool) {
 }
 
 func printUsageHelp() {
-	fmt.Fprintln(os.Stderr, `usage-cli - Claude Code & Codex usage reporter
+	fmt.Fprintln(os.Stderr, `usg - Claude Code & Codex usage reporter
 
 Usage:
-  usage-cli <command> [flags]
+  usg <command> [flags]
 
 Commands:
   claude    Show Claude Code usage

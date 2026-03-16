@@ -1,4 +1,4 @@
-BINARY = usage-cli
+BINARY = usg
 VERSION = 0.1.0
 LDFLAGS = -s -w
 

@@ -1,3 +1,3 @@
-module github.com/sujshe/usage-cli
+module github.com/tezra-io/usg
 
 go 1.26.1

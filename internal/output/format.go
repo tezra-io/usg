@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sujshe/usage-cli/internal/claude"
-	"github.com/sujshe/usage-cli/internal/codex"
+	"github.com/tezra-io/usg/internal/claude"
+	"github.com/tezra-io/usg/internal/codex"
 )
 
 // CombinedOutput is the JSON-mode output structure

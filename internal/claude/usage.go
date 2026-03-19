@@ -66,9 +66,22 @@ func FetchUsage() (*Usage, error) {
 		return nil, fmt.Errorf("auth: %w", err)
 	}
 
+	usage, statusCode, err := doFetchUsage(token)
+	if err != nil && (statusCode == 429 || statusCode == 401) {
+		// Token may be expired; try refresh and retry once
+		newToken, refreshErr := ForceRefresh()
+		if refreshErr == nil && newToken != token {
+			usage, _, err = doFetchUsage(newToken)
+		}
+	}
+
+	return usage, err
+}
+
+func doFetchUsage(token string) (*Usage, int, error) {
 	req, err := http.NewRequest("GET", usageURL, nil)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Accept", "application/json")
@@ -79,31 +92,34 @@ func FetchUsage() (*Usage, error) {
 	client := &http.Client{Timeout: 15 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("request: %w", err)
+		return nil, 0, fmt.Errorf("request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("read body: %w", err)
+		return nil, 0, fmt.Errorf("read body: %w", err)
 	}
 
 	if resp.StatusCode == 401 {
-		return nil, fmt.Errorf("unauthorized: token expired or invalid")
+		return nil, 401, fmt.Errorf("unauthorized: token expired or invalid")
 	}
 	if resp.StatusCode == 403 {
-		return nil, fmt.Errorf("forbidden: missing required scopes")
+		return nil, 403, fmt.Errorf("forbidden: missing required scopes")
+	}
+	if resp.StatusCode == 429 {
+		return nil, 429, fmt.Errorf("rate limited (429): %s", string(body))
 	}
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("API error %d: %s", resp.StatusCode, string(body))
+		return nil, resp.StatusCode, fmt.Errorf("API error %d: %s", resp.StatusCode, string(body))
 	}
 
 	var raw UsageResponse
 	if err := json.Unmarshal(body, &raw); err != nil {
-		return nil, fmt.Errorf("parse response: %w", err)
+		return nil, 200, fmt.Errorf("parse response: %w", err)
 	}
 
-	return normalize(&raw), nil
+	return normalize(&raw), 200, nil
 }
 
 func normalize(raw *UsageResponse) *Usage {

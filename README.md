@@ -5,7 +5,7 @@ Lightweight CLI to report Claude Code and Codex usage/limits.
 ## Install
 
 ```bash
-go install github.com/sujshe/usg@latest
+go install github.com/tezra-io/usg@latest
 ```
 
 Or build from source:
